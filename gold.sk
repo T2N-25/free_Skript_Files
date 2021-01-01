@@ -1,0 +1,112 @@
+options:
+	g: &6[&l골드&6]
+	
+on first join:
+	set {gold.%uuid of player%} to 0
+
+command /돈 [<text>] [<player>] [<integer>]:
+	aliases: /ehs , /골드 , /gold , /rhfem
+	trigger:
+		if arg 1 is not set:
+			if player is not op:
+				send "{@g} &f/골드 도움말 - 골드 도움말을 봅니다"
+				send "{@g} &f/골드 보내기 [플레이어] [금액]"
+				stop
+			if player is op:
+				send "{@g} &f/골드 도움말 - 골드 도움말을 봅니다"
+				send "{@g} &f/골드 보내기 [플레이어] [금액]"
+				send "{@g} &f/골드 설정 [유저] [설정금액]"
+				send "{@g} &f/골드 확인 [유저]"
+				send "{@g} &f/골드 차감 [유저] [금액]"
+				send "{@g} &f/골드 추가 [유저] [금액]"
+				send "{@g} &f/골드 초기화 [유저] [금액]"
+				send "{@g} &c/골드 전체 초기화 &l(사용 주의)"
+				stop
+		if arg 1 is "도움말":
+			if player is not op:
+				send "{@g} &f/골드 도움말 - 골드 도움말을 봅니다"
+				send "{@g} &f/골드 보내기 [플레이어] [금액]"
+				stop
+			if player is op:
+				send "{@g} &f/골드 도움말 - 골드 도움말을 봅니다"
+				send "{@g} &f/골드 보내기 [플레이어] [금액]"
+				send "{@g} &f/골드 설정 [유저] [설정금액]"
+				send "{@g} &f/골드 확인 [유저]"
+				send "{@g} &f/골드 차감 [유저] [금액]"
+				send "{@g} &f/골드 추가 [유저] [금액]"
+				send "{@g} &f/골드 초기화 [유저] [금액]"
+				send "{@g} &c/골드 전체초기화 &l(사용 주의)"
+				stop
+		if arg 1 is "보내기":
+			if arg 2 is set:
+				if arg 3 is set:
+					send "{@g} &bplayer &f님에게 &e&o%arg 3%&6&l&oG&f 를 송금 하셨습니다."
+					send "{@g} &bplayer &f님께서 &e&o%arg 3%&6&l&oG&f 를 송급 하셨습니다." to arg 2
+					add arg 3 to {gold.%uuid of player%}
+				else:
+					send "{@g} &c%arg 2%님께 보낼 금액을 적어주세요!"
+					stop
+			else:
+				send "{@g} &c골드를 보낼 플레이어를 적어주세요!"
+				stop
+		if arg 1 is "설정":
+			if arg 2 is set:
+				if arg 3 is set:
+					send "{@g} &b%arg 2% &f님의 골드를 설정하였습니다. &c&l( &e&o%arg 3%&6&l&oG &c&l)"
+					send "{@g} &c관리자&f님께서 골드를 설정 하셨습니다. &c&l( &e&o%arg 3%&6&l&oG &c&l)" to arg 2
+					set {gold.%uuid of player%} to arg 3
+				else:
+					send "{@g} &c설정할 금액을 적어주세요!"
+					stop
+			else:
+				send "{@g} &c골드를 설정할 플레이어를 적어주세요!"
+				stop
+		if arg 1 is "확인":
+			if arg 2 is set:
+				send "{@g} &b%arg 2%&f님의현재 보유 골드 : &e&o%{gold.%uuid of player%}%&6&l&oG"
+			else:
+				send "{@g} &c골드를 확인할 플레이어를 적어주세요!"
+				stop
+		if arg 1 is "차감":
+			if arg 2 is set:
+				if arg 3 is set:
+					send "{@g} &b%arg 2% &f님의 골드를 차감 하였습니다. &c&l( &e&o%arg 3%&6&l&oG &c&l)"
+					send "{@g} &c관리자&f님께서 골드를 차감 하셨습니다. &c&l( &e&o%arg 3%&6&l&oG &c&l)" to arg 2
+					remove arg 3 from {gold.%uuid of arg 2%}
+				else:
+					send "{@g} &c%arg 2%님에게 차감할 골드를 적어주세요!"
+					stop
+			else:
+				send "{@g} &c골드를 차감할 플레이어를 적어주세요!"
+				stop
+		if arg 1 is "추가":
+			if arg 2 is set:
+				if arg 3 is set:
+					send "{@g} &b%arg 2% &f님의 골드를 추가 하였습니다. &c&l( &e&o%arg 3%&6&l&oG &c&l)"
+					send "{@g} &c관리자&f님께서 골드를 추가 하셨습니다. &c&l( &e&o%arg 3%&6&l&oG &c&l)" to arg 2
+					add arg 3 to {gold.%uuid of arg 2%}
+				else:
+					send "{@g} &c%arg 2%님에게 추가할 골드를 적어주세요!"
+					stop
+			else:
+				send "{@g} &c골드를 추가할 플레이어를 적어주세요!"
+				stop
+		if arg 1 is "초기화":
+			if arg 2 is set:
+				if arg 3 is set:
+					send "{@g} &b%arg 2% &f님의 골드를 초기화 하였습니다. &c&l( &e&o0&6&l&oG &c&l)"
+					send "{@g} &c관리자&f님께서 골드를 초기화 하셨습니다. &c&l( &e&o0&6&l&oG &c&l)" to arg 2
+					set {gold.%uuid of arg 2%} to 0
+			else:
+				send "{@g} &c골드를 초기화할 플레이어를 적어주세요!"
+				stop
+		if arg 1 is "전체초기화":
+			if arg 2 is "1125":
+				send "{@g} &f비밀번호 성공 3초뒤 모든 플레이어의 골드가 초기화됩니다"
+				wait 3 seconds
+				broadcast "{@g} &b%player%&f님이 골드 전체초기화를 하셨습니다 모든 플레이어의 골드가 초기화되었습니다"
+				loop all players:
+					set {gold.%uuid of loop-player%} to 0
+			else:
+				send "{@g} &c비밀번호가 틀렸습니다"
+				stop

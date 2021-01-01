@@ -1,0 +1,26 @@
+# T2N이 제작했습니다.
+# 무단배포 및 2차제작은 금지합니다.
+# Discord : T2N#1709
+
+# 추천보상 스크립트
+options:
+	고대: &7|&6&l고대 서버&7|&r
+	오류: &7|&4&l고대 서버&7|&r
+
+on load:
+	message "" to console
+	message "                    &b&lCopyright 2020. T2N has all rights reserved." to console
+	message "                    &b&l제작자, T2N##1709" to console
+	message "                    &b&l무단배포, 2차수정은 엄격히 금지합니다." to console
+	message "                    &b&l추천보상 스크립트가 리로드 되었습니다." to console
+	message "" to console
+	
+command /consoleVote [<player>]:
+	trigger:
+		if "%executor%" is "CONSOLE":
+			if {votePoint.%uuid of arg 1%} is set:
+				set {vote.point.%uuid of arg 1%} to 1000
+			else:
+				add 1000 to {vote.point.%uuid of arg 1%}
+			message "{@고대} 1000개의 추천코인을 획득하셨습니다!" to arg 1
+			message "{@고대} 추천해주셔서 감사합니다!" to arg 1

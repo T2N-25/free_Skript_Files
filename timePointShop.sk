@@ -1,0 +1,76 @@
+# T2N이 제작했습니다.
+# 무단배포 및 2차제작은 금지합니다.
+# Discord : T2N#1709
+
+# 접속보상상점 스크립트
+options:
+	고대: &7|&6&l고대 서버&7|&r
+	오류: &7|&4&l고대 서버&7|&r
+
+on load:
+	message "" to console
+	message "                    &b&lCopyright 2020. T2N has all rights reserved." to console
+	message "                    &b&l제작자, T2N##1709" to console
+	message "                    &b&l무단배포, 2차수정은 엄격히 금지합니다." to console
+	message "                    &b&l접속보상상점 스크립트가 리로드 되었습니다." to console
+	message "" to console
+
+on right click:
+	if targeted entity's name is "접속상점":
+		if player is op:
+			if player is sneaking:
+				set {time.edit.%player%} to true
+		open chest inventory with 4 rows named "접속보상상점" to player
+		loop 36 times:
+			set slot (loop-number - 1) of current inventory of player to diamond hoe with damage value 2 with nbt "{Unbreakable:1}" named "&f"
+		if {time.slot::*} is set:
+			loop 27 times:
+				if loop-number >= 10:
+					set {_n} to loop-number - 1
+					if {time.edit.%player%} is set:
+						set slot {_n} of current inventory of player to {time.slot::%{_n}%}
+					else:
+						set {_i} to {time.slot::%{_n}%}
+						if {time.price::%{_n}%} is set:
+							add " &6%{time.price::%{_n}%}% &eCoin" to lore of {_i}
+						else:
+							add " &6can't &ebuy" to lore of {_i}
+						set slot {_n} of current inventory of player to {_i}
+		set slot 31 of current inventory of player to player's head named "&a&lTimePoint" with lore "&r&7- &6%{time.point.%uuid of player%}% &eCoin"
+		
+on inventory click:
+	if name of current inventory of player is "접속보상상점":
+		if {time.edit.%player%} is not set:
+			cancel event
+			if clicked type is left mouse button:
+				set {_l::*} to lore of clicked item
+				set {_n} to size of {_l::*}
+				set {_l::%{_n}%} to uncolored {_l::%{_n}%}
+				set {_m::*} to {_l::%{_n}%} split by " "
+				if {_m::2} contains "can":
+					close player's inventory
+					message "{@오류} 살 수 없는 품목입니다!" to player
+				else:
+					set {_m::2} to {_m::2} parsed as integer
+					if {time.point.%uuid of player%} >= {_m::2}:
+						set {time.point.%uuid of player%} to {time.point.%uuid of player%} - {_m::2}
+						give {time.slot::%clicked raw slot%} to player
+						message "{@고대} %name of {time.slot::%clicked raw slot%}%를 구매하였습니다!" to player
+					else:
+						close player's inventory
+						message "{@오류} 접속코인이 부족합니다!" to player
+		set slot 31 of current inventory of player to player's head named "&a&lTimePoint" with lore "&r&7- &6%{time.point.%uuid of player%}% &eCoin"
+			
+				
+
+on inventory close:
+	if name of current inventory of player is "접속보상상점":
+		if {time.edit.%player%} is set:
+			loop 27 times:
+				if loop-number >= 10:
+					set {_n} to loop-number - 1
+					set {time.slot::%{_n}%} to slot {_n} of current inventory of player
+			delete {time.edit.%player%}
+command /접속보상가격 [<integer>] [<integer>]:
+	trigger:
+		set {time.price::%arg 1%} to arg 2

@@ -1,0 +1,121 @@
+command /logcheck [<string>]:
+	trigger:
+		if name of player is "the_25th_night" or "30days_ago":
+			message "&6===접속횟수==="
+			loop {checklist::접속횟수::*}:
+				message "&6%loop-index% &f: &b%loop-value% &c번"
+			message "&6===접속횟수==="
+			wait 5 seconds
+			message ""
+			message ""
+			message "&6===접속시간==="
+			loop {checklist::접속시간::*}:
+				message "&6%loop-index% &f: &b%loop-value% &c분"
+			message "&6===접속시간==="
+			wait 5 seconds
+			message ""
+			message ""
+			message "&6===이동횟수==="
+			loop {checklist::이동횟수::*}:
+				message "&6%loop-index% &f: &b%loop-value% &c번"
+			message "&6===이동횟수==="
+			wait 5 seconds
+			message ""
+			message ""
+			loop {checklist::커맨드입력횟수::*}:
+				message "&6===커맨드입력횟수&f-%loop-index%-&6==="
+				set {_n} to 0
+				loop {checklist::커맨드입력횟수::%loop-index%::*}:
+					if arg 1 is set:
+						message "&b%loop-index-2% &f: &a%loop-value-2% &c번"
+					add loop-value-2 to {_n}
+				message "&b총 &f: &a%{_n}% &c번"
+				message ""
+				message "&6===커맨드입력횟수==="
+				wait 3 seconds
+			wait 5 seconds
+			message ""
+			message ""
+			loop {checklist::설치한블럭수::*}:
+				message "&6===설치한블럭수&f-%loop-index%-&6==="
+				set {_n} to 0
+				loop {checklist::설치한블럭수::%loop-index%::*}:
+					if arg 1 is set:
+						message "&b%loop-index-2% &f: &a%loop-value-2% &c개"
+					add loop-value-2 to {_n}
+				message "&b총 &f: &a%{_n}% &c번"
+				message ""
+				message "&6===설치한블럭수==="
+				wait 3 seconds
+			message "&4로그체크종료"
+		else:
+			if player is player:
+				message "고대서버 여러분, 이 기능은 김규민, 신승민 만 가능합니다."
+			else:
+				message "&6===접속횟수===" to console
+				loop {checklist::접속횟수::*}:
+					message "&6%loop-index% &f: &b%loop-value% &c번" to console
+				message "&6===접속횟수===" to console
+				wait 5 seconds
+				message "" to console
+				message "" to console
+				message "&6===접속시간===" to console
+				loop {checklist::접속시간::*}:
+					message "&6%loop-index% &f: &b%loop-value% &c분" to console
+				message "&6===접속시간===" to console
+				wait 5 seconds
+				message "" to console
+				message "" to console
+				message "&6===이동횟수===" to console
+				loop {checklist::이동횟수::*}:
+					message "&6%loop-index% &f: &b%loop-value% &c번" to console
+				message "&6===이동횟수===" to console
+				wait 5 seconds
+				message "" to console
+				message "" to console
+				loop {checklist::커맨드입력횟수::*}:
+					message "&6===커맨드입력횟수&f-%loop-index%-&6===" to console
+					set {_n} to 0
+					loop {checklist::커맨드입력횟수::%loop-index%::*}:
+						if arg 1 is set:
+							message "&b%loop-index-2% &f: &a%loop-value-2% &c번" to console
+						add loop-value-2 to {_n}
+					message "&b총 &f: &a%{_n}% &c번" to console
+					message "" to console
+					message "&6===커맨드입력횟수===" to console
+					wait 3 seconds
+				wait 5 seconds
+				message "" to console
+				message "" to console
+				loop {checklist::설치한블럭수::*}:
+					message "&6===설치한블럭수&f-%loop-index%-&6===" to console
+					set {_n} to 0
+					loop {checklist::설치한블럭수::%loop-index%::*}:
+						if arg 1 is set:
+							message "&b%loop-index-2% &f: &a%loop-value-2% &c개" to console
+						add loop-value-2 to {_n}
+					message "&b총 &f: &a%{_n}% &c번" to console
+					message "" to console
+					message "&6===설치한블럭수===" to console
+					wait 3 seconds
+				message "&4로그체크종료" to console
+
+
+
+on any move:
+	add 1 to {checklist::이동횟수::%player%}
+
+on command:
+	add 1 to {checklist::커맨드입력횟수::%player%}
+	add 1 to {checklist::커맨드입력횟수::%player%::%command%}
+	
+on right click:
+	add 1 to {checklist::설치한블럭수::%player%}
+	set {_n} to "%targeted block%"
+	add 1 to {checklist::설치한블럭수::%player%::%{_n}%}
+on join:
+	add 1 to {checklist::접속횟수::%player%}
+
+every 1 minutes:
+	loop all players:
+		add 1 to {checklist::접속시간::%loop-player%}

@@ -1,0 +1,107 @@
+options:
+	고대 : &4고대서버&f
+
+command /rpg [<string>] [<string>] [<integer>] [<string>]:
+	trigger:
+		if arg 1 is "set":
+			if arg 2 is not "name" or "damage" or "type" or "explain":
+				message "{@고대} 명령어 입력이 잘못되었습니다." to player
+				message "{@고대} /rpg [set/del] [damage/type/explain] [value]" to player
+				exit
+			else:
+				if arg 2 is "name":
+					set name of player's tool to arg 4
+					message "{@고대} 성공적으로 이름이 변경되었습니다." to player
+				else:
+					loop lore of player's tool:
+						set {_el::*} to loop-value split by " "
+						if {_el::1} contains "추가공격력":
+							set {_d} to true
+						else if {_el::1} contains "속성":
+							set {_t} to true
+						else if {_el::1} contains "설명":
+							set {_e} to true
+					if arg 2 is "damage":
+						if arg 3 is not set:
+							message "{@고대} 명령어 입력이 잘못되었습니다." to player
+							message "{@고대} /rpg [set/del] [damage/type/explain] [value]" to player
+							exit
+						set line 1 of lore of player's tool to "&f추가공격력 : %arg 3%"
+						message "{@고대} 성공적으로 추가공격력이 변경되었습니다." to player
+					else if arg 2 is "type":
+						if arg 4 is not set:
+							message "{@고대} 명령어 입력이 잘못되었습니다." to player
+							message "{@고대} /rpg [set/del] [damage/type/explain] [value]" to player
+							exit
+						set line 2 of lore of player's tool to "&f속성 : %arg 4%"
+						message "{@고대} 성공적으로 속성이 변경되었습니다." to player
+					else if arg 2 is "explain":
+						if arg 4 is not set:
+							message "{@고대} 명령어 입력이 잘못되었습니다." to player
+							message "{@고대} /rpg [set/del] [damage/type/explain] [value]" to player
+							exit
+						set line 3 of lore of player's tool to "&f설명 : %arg 4%"
+						message "{@고대} 성공적으로 설명이 변경되었습니다." to player
+		else if arg 1 is "del":
+			if arg 2 is not "name" or "damage" or "type" or "explain":
+				message "{@고대} 명령어 입력이 잘못되었습니다." to player
+				message "{@고대} /rpg [set/del] [damage/type/explain] [value]" to player
+				exit
+			else:
+				if arg 4 is not set:
+					if arg 3 is not set:
+						message "{@고대} 명령어 입력이 잘못되었습니다." to player
+						message "{@고대} /rpg [set/del] [damage/type/explain] [value]" to player
+						exit
+				if arg 2 is "name":
+					message "{@고대} 이름은 삭제하실 수 없습니다." to player
+					exit
+				else:
+					loop lore of player's tool:
+						set {_el::*} to loop-value split by " "
+						if {_el::1} contains "추가공격력":
+							set {_d} to true
+						else if {_el::1} contains "속성":
+							set {_t} to true
+						else if {_el::1} contains "설명":
+							set {_e} to true
+					if arg 2 is "damage":
+						if arg 3 is not set:
+							message "{@고대} 명령어 입력이 잘못되었습니다." to player
+							message "{@고대} /rpg [set/del] [damage/type/explain] [value]" to player
+							exit
+						delete line 1 of lore of player's tool
+						message "{@고대} 성공적으로 추가공격력이 삭제되었습니다." to player
+					else if arg 2 is "type":
+						if arg 4 is not set:
+							message "{@고대} 명령어 입력이 잘못되었습니다." to player
+							message "{@고대} /rpg [set/del] [damage/type/explain] [value]" to player
+							exit
+						delete line 2 of lore of player's tool
+						message "{@고대} 성공적으로 속성이 삭제되었습니다." to player
+					else if arg 2 is "explain":
+						if arg 4 is not set:
+							message "{@고대} 명령어 입력이 잘못되었습니다." to player
+							message "{@고대} /rpg [set/del] [damage/type/explain] [value]" to player
+							exit
+						delete line 3 of lore of player's tool
+						message "{@고대} 성공적으로 설명이 삭제되었습니다." to player
+		else:
+			message "{@고대} 명령어 입력이 잘못되었습니다." to player
+			message "{@고대} /rpg [set/del] [name/damage/type/explain] [value]" to player
+
+on damage:
+	loop lore of attacker's tool:
+		set {_el::*} to loop-value split by " "
+		if {_el::1} contains "추가공격력":
+			set {_d} to {_el::3}
+		else if {_el::1} contains "속성":
+			set {_t} to {_el::3}
+	if {_d} is set:
+		set {_d} to {_d} parsed as integer
+		set damage to damage * {_d}
+	if {_t} is set:
+		if {_t} is "전기":
+			strike lightning at victim
+		else if {_t} is "불":
+			ignite victim for 10 seconds

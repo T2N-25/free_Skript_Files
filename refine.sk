@@ -1,0 +1,244 @@
+# T2N이 제작했습니다.
+# 무단배포 및 2차제작은 금지합니다.
+# Discord : T2N#1709
+
+# 재련 스크립트
+options:
+	오류 : &4[ &c! &4]&r
+	정상 : &3[ &a@ &3]&r
+
+on load:
+	message "" to console
+	message "                    &b&lCopyright 2020. T2N has all rights reserved." to console
+	message "                    &b&l제작자, T2N##1709" to console
+	message "                    &b&l재련 스크립트가 리로드 되었습니다." to console
+	message "" to console
+
+command /재련 [<string>] [<string>] [<string>] [<integer>]:
+	trigger:
+		if arg 1 is set:
+			if player is op:
+				if arg 1 is "확률":
+					if arg 2 is "coal" or "iron_ingot" or "golden_ingot" or "diamond" or "emerald" or "lapis_lazuli":
+						set {_a2} to arg 2
+						replace "_" with " " in {_a2}
+						if arg 3 is "S" or "A" or "B" or "C" or "D" or "F":
+							if arg 4 < 0:
+								message "{@오류} 확률은 0 미만일 수 없습니다." to player
+							else if arg 4 > 100:
+								message "{@오류} 확률은 100을 초과할 수 없습니다." to player
+							else:
+								set {refine.rank.%{_a2}%.per.%arg 3%} to arg 4
+								message "{@정상} %{_a2}% 광물의 %arg 3% 등급의 재련 확률을 %arg 4%으로 설정하였습니다." to player
+						else:
+							message "{@오류} 등급은 S, A, B, C, D, F 중에서만 선택하실 수 있습니다." to player
+					else:
+						message "{@오류} %arg 2%는 재련할 수 있는 광석이 아닙니다!" to player
+				else:
+					message "{@오류} /재련 확률 [광석] [등급] [확률]" to player
+			else:
+				message "{@오류} 당신은 서버의 관리자가 아닙니다." to player
+		else:
+			open chest inventory with 3 rows named "재련" to player # 10 11 12 14 16ahfn 5Qkfrkd
+			loop 30 times:
+				set slot (loop-number - 1) of current inventory of player to gray stained glass pane named "&f"
+			set slot 5 of current inventory of player to red stained glass pane named "&f"
+			if {refine.%player%} is set:
+				set slot 10 of current inventory of player to {refine.ore1.%player%}
+				set slot 11 of current inventory of player to {refine.ore2.%player%}
+				set slot 12 of current inventory of player to {refine.ore3.%player%}
+				set slot 14 of current inventory of player to {refine.stone.%player%}
+			else:
+				set slot 10 of current inventory of player to air
+				set slot 11 of current inventory of player to air
+				set slot 12 of current inventory of player to air
+				set slot 14 of current inventory of player to air
+			set slot 16 of current inventory of player to anvil named "&r&6&l재련하기"
+			set line 1 of lore of slot 16 of current inventory of player to "&f"
+			set line 2 of lore of slot 16 of current inventory of player to "&r&f모루를 클릭 하시면"
+			set line 3 of lore of slot 16 of current inventory of player to "&r&f광물이 일정 확률로 재조정 되어"
+			set line 4 of lore of slot 16 of current inventory of player to "&r&f새로운 등급을 맞이합니다."
+			set line 5 of lore of slot 16 of current inventory of player to "&r&f가끔, 일정 확률로 더욱 낮은 광물이 재련될 수 있습니다."
+			set line 6 of lore of slot 16 of current inventory of player to " "
+			set line 7 of lore of slot 16 of current inventory of player to "&r&f재련의 소요시간은 &b재련석 등급 &f에 따라"
+			set line 8 of lore of slot 16 of current inventory of player to "&r&f다를 수 있습니다."
+			set line 9 of lore of slot 16 of current inventory of player to " "
+			set line 10 of lore of slot 16 of current inventory of player to "&r&c재련석은 일반 등급일 경우 상점에서,"
+			set line 11 of lore of slot 16 of current inventory of player to "&r&c상위 등급의 재련석은 강화소나 이벤트에서"
+			set line 12 of lore of slot 16 of current inventory of player to "&r&c획득 하실 수 있습니다!"
+			set line 13 of lore of slot 16 of current inventory of player to " "
+			if {refine.%player%} is not set:
+				set slot 23 of current inventory of player to yellow stained glass pane named "&f"
+			else:
+				set slot 23 of current inventory of player to yellow stained glass pane named "&6&l재련중입니다..."
+				set line 1 of lore of slot 23 of current inventory of player to "&r&f남은시간 : &e%{refine.%player%}/60% &r분"
+
+command /재련석 [<string>] [<integer>]:
+	trigger:
+		if player is op:
+			if arg 1 is set:
+				if arg 1 is "S" or "A" or "B" or "C" or "D" or "F":
+					if arg 2 is set:
+						if arg 1 is "S":
+							give glowing flint named "&6&l재련석" with lore "&r&b&l[등급] &r%arg 1%" and "&r재련 소요 시간 : &e%arg 2% &r분" to player
+							message "{@정상} 정상적으로 %arg 1% 등급의 재련석이 주어졌습니다." to player
+						else if arg 1 is "A":
+							give glowing coal named "&5&l재련석" with lore "&r&b&l[등급] &r%arg 1%" and "&r재련 소요 시간 : &e%arg 2% &r분" to player
+							message "{@정상} 정상적으로 %arg 1% 등급의 재련석이 주어졌습니다." to player
+						else if arg 1 is "B":
+							give glowing ink sac named "&9&l재련석" with lore "&r&b&l[등급] &r%arg 1%" and "&r재련 소요 시간 : &e%arg 2% &r분" to player
+							message "{@정상} 정상적으로 %arg 1% 등급의 재련석이 주어졌습니다." to player
+						else if arg 1 is "C":
+							give glowing gunpowder named "&8&l재련석" with lore "&r&b&l[등급] &r%arg 1%" and "&r재련 소요 시간 : &e%arg 2% &r분" to player
+							message "{@정상} 정상적으로 %arg 1% 등급의 재련석이 주어졌습니다." to player
+						else if arg 1 is "D":
+							give glowing clay ball named "&7&l재련석" with lore "&r&b&l[등급] &r%arg 1%" and "&r재련 소요 시간 : &e%arg 2% &r분" to player
+							message "{@정상} 정상적으로 %arg 1% 등급의 재련석이 주어졌습니다." to player
+						else if arg 1 is "F":
+							give glowing sugar named "&f&l재련석" with lore "&r&b&l[등급] &r%arg 1%" and "&r재련 소요 시간 : &e%arg 2% &r분" to player
+							message "{@정상} 정상적으로 %arg 1% 등급의 재련석이 주어졌습니다." to player
+					else:
+						message "{@오류} /재련석 [등급] [소요시간:분]" to player
+				else:
+					message "{@오류} 등급은 S, A, B, C, D, F 중에서만 선택하실 수 있습니다." to player
+			else:
+				message "{@오류} /재련석 [등급] [소요시간:분]" to player
+		else:
+			message "{@오류} 당신은 서버의 관리자가 아닙니다." to player
+on inventory click:
+	if name of current inventory of player is "재련":
+		if {refine.%player%} is set:
+			cancel event
+			message "{@오류} 재련중에는 아무것도 만질 수 없습니다!" to player
+		else:
+			if clicked raw slot <= 26:
+				if clicked raw slot is 5:
+					cancel event
+				else if clicked raw slot is 16:
+					cancel event
+					if type of slot 10 of current inventory of player is not iron ingot or golden ingot or diamond or emerald or lapis lazuli or coal or air:
+						message "{@오류} 첫번째 슬롯은 재련할 수 있는 광석이 아닙니다!" to player
+					else if type of slot 11 of current inventory of player is not iron ingot or golden ingot or diamond or emerald or lapis lazuli or coal or air:
+						message "{@오류} 두번째 슬롯은 재련할 수 있는 광석이 아닙니다!" to player
+					else if type of slot 12 of current inventory of player is not iron ingot or golden ingot or diamond or emerald or lapis lazuli or coal or air:
+						message "{@오류} 세번째 슬롯은 재련할 수 있는 광석이 아닙니다!" to player
+					else:
+						if name of slot 10 of current inventory of player contains "&6S급" or "&5A급" or "&9B급" or "&8C급" or "&7D급" or "&fF급":
+							message "{@오류} 첫번째 슬롯은 이미 재련된 광물입니다." to player
+						else if name of slot 11 of current inventory of player contains "&6S급" or "&5A급" or "&9B급" or "&8C급" or "&7D급" or "&fF급":
+							message "{@오류} 두번째 슬롯은 이미 재련된 광물입니다." to player
+						else if name of slot 12 of current inventory of player contains "&6S급" or "&5A급" or "&9B급" or "&8C급" or "&7D급" or "&fF급":
+							message "{@오류} 세번째 슬롯은 이미 재련된 광물입니다." to player
+						else:
+							if slot 14 of current inventory of player's name is "&6&l재련석":
+								set {_R::*} to uncolored 1st line of lore of slot 14 of current inventory of player split by " " # 2 5
+								set {_T::*} to uncolored 2nd line of lore of slot 14 of current inventory of player split by " " # 2 5
+								set {_rank} to {_R::2}
+								set {_time} to {_T::5} parsed as integer
+								set {refine.%player%} to {_time} * 60
+								set slot 23 of current inventory of player to yellow stained glass pane named "&6&l재련중입니다..."
+								set line 1 of lore of slot 23 of current inventory of player to "&r&f남은시간 : &e%{refine.%player%}/60% &r분"
+								set {refine.stone.%player%} to slot 14 of current inventory of player
+								set {refine.ore1.%player%} to slot 10 of current inventory of player
+								set {refine.ore2.%player%} to slot 11 of current inventory of player
+								set {refine.ore3.%player%} to slot 12 of current inventory of player
+								message "{@정상} 재련이 시작되었습니다!" to player
+							else:
+								message "{@오류} 재련석이 없습니다!" to player
+				else if clicked raw slot is not 10 or 11 or 12 or 14:
+					cancel event
+on inventory close:
+	if name of current inventory of player is "재련":
+		if {refine.%player%} is not set:
+			give slot 10 of current inventory of player to player
+			give slot 11 of current inventory of player to player
+			give slot 12 of current inventory of player to player
+			give slot 14 of current inventory of player to player
+every 1 seconds:
+	loop all players:
+		if loop-player is online:
+			if {refine.%loop-player%} is set:
+				set {refine.%loop-player%} to {refine.%loop-player%} - 1
+				if name of current inventory of loop-player is "재련":
+					set slot 23 of current inventory of loop-player to yellow stained glass pane named "&6&l재련중입니다..."
+					set line 1 of lore of slot 23 of current inventory of loop-player to "&r&f남은시간 : &e%{refine.%loop-player%}/60% &r분"
+				if {refine.%loop-player%} <= 0:
+					set {_inv} to 1
+					if slot 36 of loop-player's inventory is air:
+						add 1 to {_inv}
+					if slot 37 of loop-player's inventory is air:
+						add 1 to {_inv}
+					if slot 38 of loop-player's inventory is air:
+						add 1 to {_inv}
+					if slot 39 of loop-player's inventory is air:
+						add 1 to {_inv}
+					if slot 40 of loop-player's inventory is air:
+						add 1 to {_inv}
+					if number of air in the loop-player's inventory >= {_inv}:
+						if {refine.ore1.%loop-player%} is set:
+							set {_r} to random integer between 0 and 100
+							set {_t} to "%type of {refine.ore1.%loop-player%}%"
+							if {_r} > {refine.rank.%{_t}%.per.S}:
+								set {_nnn} to "&6S급"
+							else if {_r} > {refine.rank.%{_t}%.per.A}:
+								set {_nnn} to "&5A급"
+							else if {_r} > {refine.rank.%{_t}%.per.B}:
+								set {_nnn} to "&9B급"
+							else if {_r} > {refine.rank.%{_t}%.per.C}:
+								set {_nnn} to "&8C급"
+							else if {_r} > {refine.rank.%{_t}%.per.D}:
+								set {_nnn} to "&7D급"
+							else if {_r} > {refine.rank.%{_t}%.per.F}:
+								set {_nnn} to "&fF급"
+							give glowing {refine.ore1.%loop-player%} named {_nnn} with lore "&f" and "&a&l■ &f재련이 완료된 광물 입니다." and "&6&l■ &c상점판매&f 혹은 &b강화소 &f에서 사용 가능합니다!" and "&f" to loop-player
+						if {refine.ore2.%loop-player%} is set:
+							set {_r} to random integer between 0 and 100
+							set {_t} to "%type of {refine.ore2.%loop-player%}%"
+							if {_r} > {refine.rank.%{_t}%.per.S}:
+								set {_nnn} to "&6S급"
+							else if {_r} > {refine.rank.%{_t}%.per.A}:
+								set {_nnn} to "&5A급"
+							else if {_r} > {refine.rank.%{_t}%.per.B}:
+								set {_nnn} to "&9B급"
+							else if {_r} > {refine.rank.%{_t}%.per.C}:
+								set {_nnn} to "&8C급"
+							else if {_r} > {refine.rank.%{_t}%.per.D}:
+								set {_nnn} to "&7D급"
+							else if {_r} > {refine.rank.%{_t}%.per.F}:
+								set {_nnn} to "&fF급"
+							give glowing {refine.ore2.%loop-player%} named {_nnn} with lore "&f" and "&a&l■ &f재련이 완료된 광물 입니다." and "&6&l■ &c상점판매&f 혹은 &b강화소 &f에서 사용 가능합니다!" and "&f" to loop-player
+						if {refine.ore3.%loop-player%} is set:
+							set {_r} to random integer between 0 and 100
+							set {_t} to "%type of {refine.ore3.%loop-player%}%"
+							if {_r} > {refine.rank.%{_t}%.per.S}:
+								set {_nnn} to "&6S급"
+							else if {_r} > {refine.rank.%{_t}%.per.A}:
+								set {_nnn} to "&5A급"
+							else if {_r} > {refine.rank.%{_t}%.per.B}:
+								set {_nnn} to "&9B급"
+							else if {_r} > {refine.rank.%{_t}%.per.C}:
+								set {_nnn} to "&8C급"
+							else if {_r} > {refine.rank.%{_t}%.per.D}:
+								set {_nnn} to "&7D급"
+							else if {_r} > {refine.rank.%{_t}%.per.F}:
+								set {_nnn} to "&fF급"
+							give glowing {refine.ore3.%loop-player%} named {_nnn} with lore "&f" and "&a&l■ &f재련이 완료된 광물 입니다." and "&6&l■ &c상점판매&f 혹은 &b강화소 &f에서 사용 가능합니다!" and "&f" to loop-player
+						delete {refine.%loop-player%}
+						delete {refine.stone.%loop-player%}
+						if {refine.ore1.%loop-player%} is set:
+							delete {refine.ore1.%loop-player%}
+						if {refine.ore2.%loop-player%} is set:
+							delete {refine.ore2.%loop-player%}
+						if {refine.ore3.%loop-player%} is set:
+							delete {refine.ore3.%loop-player%}
+						if name of current inventory of loop-player is "재련":
+							set slot 10 of current inventory of loop-player to air
+							set slot 11 of current inventory of loop-player to air
+							set slot 12 of current inventory of loop-player to air
+							set slot 14 of current inventory of loop-player to air
+						message "{@정상} 재련이 완료되었습니다!" to loop-player
+					else:
+						set {refine.%loop-player%} to {refine.%loop-player%} + 30
+						message "{@오류} 인벤토리에 빈 공간이 부족합니다!" to loop-player
+						message "{@오류} 재련시간이 30초 증가하였습니다." to loop-player
+						message "{@오류} 인벤토리가 비워지지 않으면 해당현상은 무한히 반복됩니다." to loop-player
