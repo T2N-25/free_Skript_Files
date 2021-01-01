@@ -50,7 +50,7 @@ command /logcheck [<string>]:
 			message "&4로그체크종료"
 		else:
 			if player is player:
-				message "고대서버 여러분, 이 기능은 김규민, 신승민 만 가능합니다."
+				message "Nop"
 			else:
 				message "&6===접속횟수===" to console
 				loop {checklist::접속횟수::*}:
